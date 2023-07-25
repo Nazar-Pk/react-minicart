@@ -1,0 +1,26 @@
+{
+  "name": "with-react",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "adastra dev -s utd-theme-content-test",
+    "build": "adastra build",
+    "preview": "adastra preview",
+    "check": "adastra check"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.15",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@heroicons/react": "^2.0.18",
+    "@vitejs/plugin-react": "^3.1.0",
+    "adastra-cli": "latest",
+    "adastra-plugin": "latest",
+    "autoprefixer": "^10.4.13",
+    "postcss": "^8.4.21",
+    "tailwindcss": "^3.2.7",
+    "vite": "^4.1.4"
+  }
+}
