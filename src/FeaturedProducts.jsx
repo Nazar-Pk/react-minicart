@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react"
-import {storefront} from "./utils/storefront"
+import storefront from "./utils/storefront"
 import {currencyFormat} from "./utils/currencyFormat"
 
 export default function FeaturedProducts() {
@@ -8,8 +8,8 @@ export default function FeaturedProducts() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const res = await storefront(productsQuery);
-                setProducts(res.data.products);
+                const data = await storefront(productsQuery);
+                setProducts(data.products);
             } catch (err) {
                 console.log(err);
             }

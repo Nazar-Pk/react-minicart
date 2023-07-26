@@ -1,17 +1,19 @@
 import React, {useEffect, useState} from 'react'
-import {storefront} from "./utils/storefront";
+import storefront from "./utils/storefront";
 import {currencyFormat} from "./utils/currencyFormat"
+import {gql} from "graphql-request";
 
 export default function Product() {
     const [product, setProduct] = useState({});
+    const [quantity, setQuantity] = useState(1)
     const root = document.querySelector("#product");
     const handle = root.dataset.handle;
 
     useEffect(() => {
         async function fetchData() {
             try {
-                const res = await storefront(singleProduct, {handle});
-                setProduct(res.data.product);
+                const data = await storefront(singleProduct, {handle: handle});
+                setProduct(data.product);
             } catch (err) {
                 console.log(err);
             }
@@ -20,8 +22,51 @@ export default function Product() {
         fetchData();
     }, []);
 
-    if(product) {
-        console.log(product)
+    const getLines = () => [
+        {
+            quantity: quantity,
+            merchandiseId: product.variants.edges[0].node.id,
+        },
+    ]
+
+    const increaseQty = () => {
+        setQuantity(quantity + 1);
+    }
+
+    const decreaseQty = () => {
+        quantity > 1 && setQuantity(quantity - 1);
+    }
+
+    const handleAddToCart = async () => {
+        let cartId = sessionStorage.getItem('cartId')
+        if (cartId) {
+            const variables = {
+                cartId,
+                lines: getLines(),
+            }
+            const data = await storefront(updateCartMutation, variables);
+
+            document.dispatchEvent(new CustomEvent("cart:item:add", {
+                detail: data
+            }));
+
+            console.log(data,"data updateCartMutation")
+        } else {
+            const variables = {
+                input: {
+                    lines: getLines(),
+                },
+            }
+            const data = await storefront(createCartMutation, variables)
+            cartId = data.cartCreate.cart.id
+            sessionStorage.setItem('cartId', cartId)
+
+            document.dispatchEvent(new CustomEvent("cart:item:add", {
+                detail: data
+            }));
+
+            console.log(data,"data createCartMutation")
+        }
     }
 
     return (
@@ -46,9 +91,11 @@ export default function Product() {
                         <p className="text-dark-grayish-blue pb-6 lg:py-7 lg:leading-6">
                             {product.description}
                         </p>
-                        <div className="amount font-bold flex items-center justify-between lg:flex-col lg:items-start mb-6">
+                        <div
+                            className="amount font-bold flex items-center justify-between lg:flex-col lg:items-start mb-6">
                             <div className="discount-price items-center flex">
-                                <div className="price text-3xl">{currencyFormat(product.variants?.edges[0].node.price.amount)}</div>
+                                <div
+                                    className="price text-3xl">{currencyFormat(product.variants?.edges[0].node.price.amount)}</div>
                             </div>
 
                             {product.variants?.edges[0].node.compareAtPrice?.amount && (
@@ -58,19 +105,57 @@ export default function Product() {
                             )}
                         </div>
                         <div className="sm:flex lg:mt-8 w-full">
-                            <button
-                                className="cart w-full h-14 bg-blue-500	rounded-lg lg:rounded-xl mb-2 shadow-orange-shadow shadow-2xl text-white flex items-center justify-center lg:w-3/5 hover:opacity-60">
+                            <div className="quantity-container w-full bg-light-grayish-blue rounded-lg h-14 mb-4 flex items-center justify-between px-6 lg:px-3 font-bold sm:mr-3 lg:mr-5 lg:w-1/3">
+                                <button
+                                    onClick={decreaseQty}
+                                    className="text-orange w-7 text-2xl leading-none font-bold mb-1 lg:mb-2 lg:text-3xl hover:opacity-60"
+                                >
+                                    -
+                                </button>
+                                <input readOnly={true}
+                                       className="quantity focus:outline-none text-dark-blue bg-light-grayish-blue font-bold flex text-center w-full"
+                                       type="number" name="quantity"
+                                       value={quantity}
+                                       aria-label="quantity number"/>
+                                <button
+                                    onClick={increaseQty}
+                                    className="text-orange w-7 text-2xl leading-none font-bold mb-1 lg:mb-2 lg:text-3xl hover:opacity-60"
+                                >
+                                    +
+                                </button>
+                            </div>
+
+                            <button onClick={handleAddToCart} className="cart w-full h-14 bg-orange rounded-lg lg:rounded-xl mb-2 shadow-orange-shadow shadow-2xl text-white flex items-center justify-center lg:w-3/5 hover:opacity-60">
                                 Add to cart
                             </button>
                         </div>
                     </section>
                 </main>
             )}
-       </>
+        </>
     )
 }
 
-const singleProduct = `
+const createCartMutation = gql`
+  mutation cartCreate($input: CartInput) {
+    cartCreate(input: $input) {
+      cart {
+        id
+      }
+    }
+  }
+`
+const updateCartMutation = gql`
+  mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+    cartLinesAdd(cartId: $cartId, lines: $lines) {
+      cart {
+        id
+      }
+    }
+  }
+`
+
+const singleProduct = gql`
     query SingleProduct($handle: String!) {
   product(handle: $handle) {
     title

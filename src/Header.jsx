@@ -30,11 +30,15 @@ function classNames(...classes) {
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+    const openCart = () => {
+        document.dispatchEvent(new CustomEvent("cart:action:open", {}));
+    }
+
     return (
         <header className="bg-white">
             <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
                 <div className="flex lg:flex-1">
-                    <a href="#" className="-m-1.5 p-1.5">
+                    <a href="/" className="-m-1.5 p-1.5">
                         <span className="sr-only">Your Company</span>
                         <img className="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="" />
                     </a>
@@ -116,7 +120,7 @@ export default function Header() {
                         Log in <span aria-hidden="true">&rarr;</span>
                     </a>
 
-                    <button href="#"
+                    <button onClick={openCart}
                        className="flex h-10 items-center px-2 rounded-lg border border-gray-200 hover:border-gray-300 focus:outline-none hover:shadow-inner">
                         <svg className="h-6 w-6 leading-none text-gray-300 stroke-current"
                              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -200,7 +204,7 @@ export default function Header() {
                                     href="#"
                                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                                 >
-                                    Log in 1
+                                    Log in
                                 </a>
                             </div>
                         </div>
