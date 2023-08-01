@@ -1,3 +1,38 @@
 {% render 'adastra' with 'Minicart.jsx' %}
 
 <div id="minicart"></div>
+
+
+<script type="application/json" id="minicartConfig">
+    {
+        "heading": {{ section.settings.heading | json }},
+        "emptyCartText": {{ section.settings.empty_cart_text | json }},
+        "showNote": {{ section.settings.show_note | json }}
+    }
+</script>
+
+{% schema %}
+    {
+        "name": "Minicart",
+        "settings": [
+            {
+                "id": "heading",
+                "type": "text",
+                "label": "Heading",
+                "default": "Shopping cart"
+            },
+            {
+                "id": "empty_cart_text",
+                "type": "text",
+                "label": "Empty cart text",
+                "default": "Your cart is empty!"
+            },
+            {
+                "id": "show_note",
+                "type": "checkbox",
+                "label": "Show note",
+                "default": true
+            }
+        ]
+    }
+{% endschema %}

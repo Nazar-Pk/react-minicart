@@ -75,6 +75,8 @@ export default function Product() {
                 detail: data.cartCreate.cart.totalQuantity
             }));
         }
+
+        setQuantity(1);
     }
 
     return (

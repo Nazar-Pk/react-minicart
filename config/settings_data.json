@@ -1,6 +1,31 @@
 {
-  "current": {},
+  "current": {
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+        }
+      },
+      "minicart": {
+        "type": "minicart",
+        "settings": {
+          "heading": "Your Shopping Cart",
+          "empty_cart_text": "Your cart is empty!",
+          "show_note": true
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {
+        }
+      }
+    },
+    "content_for_index": [
+
+    ]
+  },
   "presets": {
-    "Default": {}
+    "Default": {
+    }
   }
 }

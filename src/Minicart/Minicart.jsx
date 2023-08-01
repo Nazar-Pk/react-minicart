@@ -7,15 +7,22 @@ import {gql} from "graphql-request";
 import storefront from "../utils/storefront";
 
 export default function Minicart() {
+    const [config, setConfig] = useState({});
     const [open, setOpen] = useState(false);
     const [cart, setCart] = useState({});
     const [isCartEmpty, setIsCartEmpty] = useState(true);
-    const [errors,setErrors] = useState([]);
+    const [errors, setErrors] = useState([]);
 
     const cartId = sessionStorage.getItem('cartId');
 
     const handleClose = () => {
         setOpen(false);
+    }
+
+    const onItemAdd = async ({cart, userErrors}) => {
+        if (userErrors.length) setErrors(userErrors);
+        setCart(cart);
+        setOpen(true);
     }
 
     const handleRemoveItem = async (cartId, lineId) => {
@@ -40,15 +47,15 @@ export default function Minicart() {
             ]
         }
 
-        const {cartLinesUpdate,userErrors} = await storefront(updateItemMutation, variables);
+        const {cartLinesUpdate} = await storefront(updateItemMutation, variables);
 
         setCart(cartLinesUpdate.cart);
 
-        if(cartLinesUpdate.userErrors.length) setErrors(userErrors);
+        if (cartLinesUpdate.userErrors.length) setErrors(cartLinesUpdate.userErrors);
     }
 
     async function getCart() {
-        if(!cartId) return;
+        if (!cartId) return;
 
         try {
             const {cart} = await storefront(getCartQuery, {id: cartId});
@@ -59,13 +66,14 @@ export default function Minicart() {
         }
     }
 
-    const onItemAdd = async ({cart,userErrors}) => {
-        if(userErrors.length) setErrors(userErrors);
-        setCart(cart);
-        setOpen(true);
+    function getConfig() {
+        let configJSON = JSON.parse(document.getElementById("minicartConfig").textContent);
+
+        setConfig(configJSON);
     }
 
     useEffect(() => {
+        getConfig();
         getCart();
 
         document.addEventListener("cart:action:open", () => setOpen(true));
@@ -83,45 +91,52 @@ export default function Minicart() {
     useEffect(() => {
         setTimeout(() => {
             setErrors([]);
-        },5000);
+        }, 5000);
     }, [errors]);
 
     return (
         <Drawer isOpen={open} setOpen={setOpen}>
-            <MinicartHeader onClose={handleClose}/>
-                <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
-                    {errors.length > 0 && (
-                        <ul className={"mb-6 w-full flex items-center justify-between p-4 bg-light-grayish-blue rounded-lg font-bold"}>
-                            {errors.map((error,index) => {
-                                return (
-                                    <li key={index} className={"text-red-500"}>{error.message}</li>
-                                )
-                            })}
-                        </ul>
-                    )}
-                     {!isCartEmpty ? (
-                        <ul role="list" className="-my-6 divide-y divide-gray-200">
-                            {cart.lines.edges.map((item,index) => {
-                                const lineItem = item.node;
+            <MinicartHeader headingText={config.heading} onClose={handleClose}/>
+            <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+                {errors.length > 0 && (
+                    <ul className={"mb-6 w-full flex items-center justify-between p-4 bg-light-grayish-blue rounded-lg font-bold"}>
+                        {errors.map((error, index) => {
+                            return (
+                                <li key={index} className={"text-red-500"}>{error.message}</li>
+                            )
+                        })}
+                    </ul>
+                )}
+                {!isCartEmpty ? (
+                    <ul role="list" className="-my-6 divide-y divide-gray-200">
+                        {cart.lines.edges.map((item, index) => {
+                            const lineItem = item.node;
 
-                                return (
-                                    <MinicartProduct
-                                        key={index}
-                                        product={lineItem}
-                                        onRemove={() => handleRemoveItem(cart.id, lineItem.id)}
-                                        onIncreaseQty={() => handleUpdateItem(cart.id, lineItem.id,lineItem.quantity + 1)}
-                                        onDecreaseQty={() => handleUpdateItem(cart.id, lineItem.id,lineItem.quantity - 1)}
-                                    />
-                                )
-                            })}
-                        </ul>
-                    ) : (
-                        <div className={"flex flex-1 justify-center items-center h-full"}>
-                            <h2 className={"text-lg font-medium text-gray-900 text-center"}>Your cart is empty!</h2>
-                        </div>
-                    )}
-                </div>
-            <MinicartFooter checkoutUrl={cart.checkoutUrl} handleClose={handleClose}/>
+                            return (
+                                <MinicartProduct
+                                    key={index}
+                                    product={lineItem}
+                                    onRemove={() => handleRemoveItem(cart.id, lineItem.id)}
+                                    onIncreaseQty={() => handleUpdateItem(cart.id, lineItem.id, lineItem.quantity + 1)}
+                                    onDecreaseQty={() => handleUpdateItem(cart.id, lineItem.id, lineItem.quantity - 1)}
+                                />
+                            )
+                        })}
+                    </ul>
+                ) : (
+                    <div className={"flex flex-1 justify-center items-center h-full"}>
+                        <h2 className={"text-lg font-medium text-gray-900 text-center"}>{config.emptyCartText}</h2>
+                    </div>
+                )}
+            </div>
+            {!isCartEmpty && (
+                <MinicartFooter
+                    showNote={config.showNote}
+                    cartId={cartId}
+                    checkoutUrl={cart.checkoutUrl}
+                    handleClose={handleClose}
+                />
+            )}
         </Drawer>
     )
 }
