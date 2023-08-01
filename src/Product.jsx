@@ -38,34 +38,42 @@ export default function Product() {
     }
 
     const handleAddToCart = async () => {
-        let cartId = sessionStorage.getItem('cartId')
+        let cartId = sessionStorage.getItem('cartId');
+
         if (cartId) {
             const variables = {
                 cartId,
                 lines: getLines(),
             }
+
             const data = await storefront(updateCartMutation, variables);
 
             document.dispatchEvent(new CustomEvent("cart:item:add", {
-                detail: data
+                detail: data.cartLinesAdd
             }));
 
-            console.log(data,"data updateCartMutation")
+            document.dispatchEvent(new CustomEvent("cart:update:quantity", {
+                detail: data.cartLinesAdd.cart.totalQuantity
+            }));
         } else {
             const variables = {
                 input: {
                     lines: getLines(),
-                },
+                }
             }
-            const data = await storefront(createCartMutation, variables)
-            cartId = data.cartCreate.cart.id
+            const data = await storefront(createCartMutation, variables);
+
+            cartId = data.cartCreate.cart.id;
+
             sessionStorage.setItem('cartId', cartId)
 
             document.dispatchEvent(new CustomEvent("cart:item:add", {
-                detail: data
+                detail: data.cartCreate
             }));
 
-            console.log(data,"data createCartMutation")
+            document.dispatchEvent(new CustomEvent("cart:update:quantity", {
+                detail: data.cartCreate.cart.totalQuantity
+            }));
         }
     }
 
@@ -105,7 +113,8 @@ export default function Product() {
                             )}
                         </div>
                         <div className="sm:flex lg:mt-8 w-full">
-                            <div className="quantity-container w-full bg-light-grayish-blue rounded-lg h-14 mb-4 flex items-center justify-between px-6 lg:px-3 font-bold sm:mr-3 lg:mr-5 lg:w-1/3">
+                            <div
+                                className="quantity-container w-full bg-light-grayish-blue rounded-lg h-14 mb-4 flex items-center justify-between px-6 lg:px-3 font-bold sm:mr-3 lg:mr-5 lg:w-1/3">
                                 <button
                                     onClick={decreaseQty}
                                     className="text-orange w-7 text-2xl leading-none font-bold mb-1 lg:mb-2 lg:text-3xl hover:opacity-60"
@@ -125,7 +134,8 @@ export default function Product() {
                                 </button>
                             </div>
 
-                            <button onClick={handleAddToCart} className="cart w-full h-14 bg-orange rounded-lg lg:rounded-xl mb-2 shadow-orange-shadow shadow-2xl text-white flex items-center justify-center lg:w-3/5 hover:opacity-60">
+                            <button onClick={handleAddToCart}
+                                    className="cart w-full h-14 bg-orange rounded-lg lg:rounded-xl mb-2 shadow-orange-shadow shadow-2xl text-white flex items-center justify-center lg:w-3/5 hover:opacity-60">
                                 Add to cart
                             </button>
                         </div>
@@ -141,6 +151,47 @@ const createCartMutation = gql`
     cartCreate(input: $input) {
       cart {
         id
+      lines(first: 50) {
+        edges {
+          node {
+            id
+            quantity
+            merchandise {
+              ... on ProductVariant {
+                id
+                title
+                price {
+                  amount
+                  currencyCode
+                }
+                image {
+                  url
+                  altText
+                  width
+                  height
+                }
+                product {
+                  id
+                  title
+                  handle
+                }
+              }
+            }
+          }
+        }
+      }
+      estimatedCost {
+        totalAmount {
+          amount
+          currencyCode
+        }
+      }
+      totalQuantity
+      checkoutUrl
+      }
+       userErrors {
+          field
+          message
       }
     }
   }
@@ -149,7 +200,48 @@ const updateCartMutation = gql`
   mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
     cartLinesAdd(cartId: $cartId, lines: $lines) {
       cart {
-        id
+       id
+      lines(first: 50) {
+        edges {
+          node {
+            id
+            quantity
+            merchandise {
+              ... on ProductVariant {
+                id
+                title
+                price {
+                  amount
+                  currencyCode
+                }
+                image {
+                  url
+                  altText
+                  width
+                  height
+                }
+                product {
+                  id
+                  title
+                  handle
+                }
+              }
+            }
+          }
+        }
+      }
+      estimatedCost {
+        totalAmount {
+          amount
+          currencyCode
+        }
+      }
+          totalQuantity
+          checkoutUrl
+      }
+          userErrors {
+          field
+          message
       }
     }
   }

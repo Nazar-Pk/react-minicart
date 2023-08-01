@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import {Fragment, useEffect, useState} from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import {
     ArrowPathIcon,
@@ -28,7 +28,14 @@ function classNames(...classes) {
 }
 
 export default function Header() {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [cartQty, setCartQty] = useState(0);
+
+    useEffect(() => {
+        document.addEventListener("cart:update:quantity", (event) => {
+            setCartQty(event.detail || 0);
+        });
+    }, []);
 
     const openCart = () => {
         document.dispatchEvent(new CustomEvent("cart:action:open", {}));
@@ -127,7 +134,7 @@ export default function Header() {
                             <path
                                   d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                         </svg>
-                        <span className="pl-1 text-gray-500 text-md">0</span>
+                        <span className="pl-1 text-gray-500 text-md">{cartQty}</span>
                     </button>
                 </div>
             </nav>
