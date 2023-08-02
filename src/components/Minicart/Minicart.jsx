@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {MinicartHeader, MinicartFooter, MinicartProduct} from "./components";
 import {Drawer} from "../index";
-import {storefront, getCartQuery, removeItemMutation, updateItemMutation} from "../../utils";
+import {storefront, getCartQuery, removeItemMutation, updateItemMutation,getCookie} from "../../utils";
 
 export default function Minicart() {
     const [config, setConfig] = useState({});
@@ -11,7 +11,7 @@ export default function Minicart() {
     const [errors, setErrors] = useState([]);
     const [loading, setLoading] = useState(false)
 
-    const cartId = sessionStorage.getItem('cartId');
+    const cartId = getCookie('cartId');
 
     const handleClose = () => {
         setOpen(false);
@@ -86,10 +86,10 @@ export default function Minicart() {
     }, []);
 
     useEffect(() => {
-        setIsCartEmpty(Object.keys(cart).length === 0 || cart.totalQuantity === 0);
+        setIsCartEmpty(cart === null || Object.keys(cart).length === 0 || cart.totalQuantity === 0);
 
         document.dispatchEvent(new CustomEvent("cart:update:quantity", {
-            detail: cart.totalQuantity
+            detail: cart?.totalQuantity
         }));
     }, [cart]);
 

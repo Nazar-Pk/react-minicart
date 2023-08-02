@@ -2,20 +2,18 @@ import React, {useRef, useState} from "react";
 import {currencyFormat, storefront, updateNoteMutation} from "../../../../utils";
 
 export default function MinicartFooter({cart, showNote = false, cartId, checkoutUrl, handleClose}) {
-    const [note, setNote] = useState("");
-    const [noteOpen, setNoteOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [url, setUrl] = useState(checkoutUrl);
 
     const noteRef = useRef(null);
 
     const handleSubmit = async (event) => {
-        if (note.length) {
+        setLoading(true);
+
+        if (noteRef.current.value.length) {
             event.preventDefault();
 
-            setLoading(true);
-
-            const {cartNoteUpdate} = await storefront(updateNoteMutation, {cartId: cartId, note: note});
+            const {cartNoteUpdate} = await storefront(updateNoteMutation, {cartId: cartId, note: noteRef.current.value});
 
             setUrl(cartNoteUpdate.cart.checkoutUrl);
 
@@ -32,33 +30,15 @@ export default function MinicartFooter({cart, showNote = false, cartId, checkout
             <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
 
             {showNote && (
-                <>
-                    <div className="mt-2">
-                        <button className={"border-b-2 flex items-center hover:opacity-90"}
-                                onClick={() => setNoteOpen(!noteOpen)}>
-                            Add Note
-                            <span
-                                className="text-orange height-4 w-7 text-2xl font-bold">
-                           {!noteOpen ? "+" : "-"}
-                    </span>
-                        </button>
-                    </div>
-
-                    {noteOpen && (
-                        <div className={"mt-2"}>
-                        <textarea
-                            ref={noteRef}
-                            onInput={(e) => {
-                                setNote(e.target.value)
-                            }}
-                            className={"w-full h-15 flex items-center justify-between bg-light-grayish-blue rounded-lg p-4 resize-none"}
-                            name="note"
-                            id="note"
-                            placeholder="Add Note"
-                        />
-                        </div>
-                    )}
-                </>
+                <div className={"mt-2"}>
+                    <textarea
+                        ref={noteRef}
+                        className={"w-full h-15 flex items-center justify-between bg-light-grayish-blue rounded-lg p-4 resize-none"}
+                        name="note"
+                        id="note"
+                        placeholder="Add Note"
+                    />
+                </div>
             )}
 
             <div className="mt-6">

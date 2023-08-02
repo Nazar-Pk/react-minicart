@@ -1,5 +1,13 @@
 import React, {useEffect, useState} from 'react'
-import {currencyFormat, storefront, singleProduct, updateCartMutation, createCartMutation} from "../../utils/"
+import {
+    currencyFormat,
+    storefront,
+    singleProduct,
+    updateCartMutation,
+    createCartMutation,
+    getCookie,
+    setCookie
+} from "../../utils/"
 import {Loader} from "../index";
 
 export default function Product() {
@@ -39,7 +47,8 @@ export default function Product() {
 
     const handleAddToCart = async () => {
         setLoading(true);
-        let cartId = sessionStorage.getItem('cartId');
+
+        let cartId = getCookie('cartId');
 
         if (cartId) {
             const variables = {
@@ -66,7 +75,7 @@ export default function Product() {
 
             cartId = data.cartCreate.cart.id;
 
-            sessionStorage.setItem('cartId', cartId)
+            setCookie("cartId", cartId);
 
             document.dispatchEvent(new CustomEvent("cart:item:add", {
                 detail: data.cartCreate
