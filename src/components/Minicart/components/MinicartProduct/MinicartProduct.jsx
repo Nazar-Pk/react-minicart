@@ -1,7 +1,7 @@
-import {currencyFormat} from "../../../utils/currencyFormat"
+import {currencyFormat} from "../../../../utils"
 import React from "react";
 
-export default function MinicartProduct({product,onRemove,onIncreaseQty, onDecreaseQty,loading}) {
+export default function MinicartProduct({product, onRemove, onIncreaseQty, onDecreaseQty, loading}) {
     return (
         <li key={product.id} className="flex py-6">
             <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
@@ -16,14 +16,16 @@ export default function MinicartProduct({product,onRemove,onIncreaseQty, onDecre
                 <div>
                     <div className="flex justify-between text-base font-medium text-gray-900">
                         <h3>
-                            <a className={"hover:opacity-60"} href={`/products/${product.merchandise.product.handle}`}>{product.merchandise.product.title}</a>
+                            <a className={"hover:opacity-60"}
+                               href={`/products/${product.merchandise.product.handle}`}>{product.merchandise.product.title}</a>
                         </h3>
                         <p className="ml-4">{currencyFormat(product.merchandise.price.amount * product.quantity)}</p>
                     </div>
                 </div>
 
                 <div className="flex mt-auto items-center justify-between text-sm">
-                    <div className="w-full h-10 flex items-center justify-between px-2 bg-light-grayish-blue rounded-lg font-bold lg:w-1/2">
+                    <div
+                        className="w-full h-10 flex items-center justify-between px-2 bg-light-grayish-blue rounded-lg font-bold lg:w-1/2">
                         <button
                             onClick={onDecreaseQty}
                             disabled={loading}

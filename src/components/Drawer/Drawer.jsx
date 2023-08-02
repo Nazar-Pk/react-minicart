@@ -1,7 +1,7 @@
-import React, {Fragment, useEffect, useState} from 'react'
-import { Dialog, Transition } from '@headlessui/react'
+import React, {Fragment} from 'react'
+import {Dialog, Transition} from '@headlessui/react'
 
-export default function Drawer({children,isOpen,setOpen}) {
+export default function Drawer({children, isOpen, setOpen}) {
     return (
         <Transition.Root show={isOpen} as={Fragment}>
             <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -14,7 +14,7 @@ export default function Drawer({children,isOpen,setOpen}) {
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
-                    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"/>
                 </Transition.Child>
 
                 <div className="fixed inset-0 overflow-hidden">

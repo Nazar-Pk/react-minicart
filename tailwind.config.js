@@ -33,14 +33,14 @@ module.exports = {
                 xl: ['var(--font-size-xl)', '1.4']
             },
             colors: {
-                'orange': 'hsl(26, 100%, 55%)',
+                'orange': '#FF7D1A',
                 'pale-orange': 'hsl(25, 100%, 94%)',
                 'very-dark-blue': 'hsl(220, 13%, 13%)',
                 'dark-grayish-blue': 'hsl(222, 4%, 48%)',
                 'grayish-blue': 'hsl(230, 4%, 72%)',
-                'light-grayish-blue': 'hsl(223, 64%, 98%)',
-                'white': 'hsl(0, 0%, 100%)',
-                'black': 'hsl(0, 0%, 0%)',
+                'light-grayish-blue': '#F7F8FD',
+                'white': '#fff',
+                'black': '#000',
                 'orange-shadow': 'hsl(27, 100%, 80%)'
             },
             transitionTimingFunction: {

@@ -1,10 +1,7 @@
 import React, {useEffect, useState} from 'react'
-import MinicartProduct from "./components/MinicartProduct/MinicartProduct";
-import MinicartHeader from "./components/MinicartHeader/MinicartHeader";
-import MinicartFooter from "./components/MinicartFooter/MinicartFooter";
-import Drawer from "../Drawer/Drawer";
-import {gql} from "graphql-request";
-import storefront from "../utils/storefront";
+import {MinicartHeader, MinicartFooter, MinicartProduct} from "./components";
+import {Drawer} from "../index";
+import {storefront, getCartQuery, removeItemMutation, updateItemMutation} from "../../utils";
 
 export default function Minicart() {
     const [config, setConfig] = useState({});
@@ -97,7 +94,7 @@ export default function Minicart() {
     }, [cart]);
 
     useEffect(() => {
-        if(errors.length) {
+        if (errors.length) {
             setTimeout(() => {
                 setErrors([]);
             }, 10000);
@@ -161,145 +158,3 @@ export default function Minicart() {
     )
 }
 
-const getCartQuery = gql`
-  query getCart($id: ID!) {
-    cart(id: $id) {
-      id
-      lines(first: 50) {
-        edges {
-          node {
-            id
-            quantity
-            merchandise {
-              ... on ProductVariant {
-                id
-                title
-                price {
-                  amount
-                  currencyCode
-                }
-                image {
-                  url
-                  altText
-                  width
-                  height
-                }
-                product {
-                  id
-                  title
-                  handle
-                }
-              }
-            }
-          }
-        }
-      }
-      estimatedCost {
-        totalAmount {
-          amount
-          currencyCode
-        }
-      }
-      totalQuantity
-      checkoutUrl
-    }
-  }
-`
-
-const removeItemMutation = gql`
-  mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
-    cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
-        cart {
-          id
-          lines(first: 50) {
-            edges {
-              node {
-                id
-                quantity
-                merchandise {
-                  ... on ProductVariant {
-                    id
-                    title
-                    price {
-                      amount
-                      currencyCode
-                    }
-                    image {
-                      url
-                      altText
-                      width
-                      height
-                    }
-                    product {
-                      id
-                      title
-                      handle
-                    }
-                  }
-                }
-              }
-            }
-          }
-          estimatedCost {
-            totalAmount {
-              amount
-              currencyCode
-            }
-          }
-          totalQuantity
-          checkoutUrl
-        }
-    }
-  }
-`
-
-const updateItemMutation = gql`
-  mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
-  cartLinesUpdate(cartId: $cartId, lines: $lines) {
-    cart {
-          id
-          lines(first: 50) {
-            edges {
-              node {
-                id
-                quantity
-                merchandise {
-                  ... on ProductVariant {
-                    id
-                    title
-                    price {
-                      amount
-                      currencyCode
-                    }
-                    image {
-                      url
-                      altText
-                      width
-                      height
-                    }
-                    product {
-                      id
-                      title
-                      handle
-                    }
-                  }
-                }
-              }
-            }
-          }
-          estimatedCost {
-            totalAmount {
-              amount
-              currencyCode
-            }
-          }
-          totalQuantity
-          checkoutUrl
-        }
-    userErrors {
-      field
-      message
-    }
-  }
-}
-`

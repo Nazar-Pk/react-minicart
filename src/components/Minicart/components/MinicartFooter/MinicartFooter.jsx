@@ -1,7 +1,5 @@
 import React, {useRef, useState} from "react";
-import {gql} from "graphql-request";
-import storefront from "../../../utils/storefront";
-import {currencyFormat} from "../../../utils/currencyFormat";
+import {currencyFormat, storefront, updateNoteMutation} from "../../../../utils";
 
 export default function MinicartFooter({cart, showNote = false, cartId, checkoutUrl, handleClose}) {
     const [note, setNote] = useState("");
@@ -88,12 +86,3 @@ export default function MinicartFooter({cart, showNote = false, cartId, checkout
     )
 }
 
-const updateNoteMutation = gql`
-  mutation cartNoteUpdate($cartId: ID!, $note:  String) {
-  cartNoteUpdate(cartId: $cartId, note: $note) {
-    cart {
-      checkoutUrl
-    }
-  }
-}
-`

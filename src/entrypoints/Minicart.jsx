@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
-import Minicart from "../Minicart/Minicart";
+import {Minicart} from "../components";
 
 ReactDOM.createRoot(document.getElementById('minicart')).render(
     <React.StrictMode>

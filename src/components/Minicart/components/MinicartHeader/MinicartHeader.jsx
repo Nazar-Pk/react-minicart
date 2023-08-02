@@ -1,7 +1,6 @@
 import {XMarkIcon} from "@heroicons/react/24/outline";
-import React, {useState} from "react";
-import {currencyFormat} from "../../../utils/currencyFormat";
-import ProgressBar from "../ProgressBar/ProgressBar";
+import React from "react";
+import {ProgressBar} from "../index";
 
 export default function MinicartHeader({
     cart,

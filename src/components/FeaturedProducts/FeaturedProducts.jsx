@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from "react"
-import storefront from "./utils/storefront"
-import {currencyFormat} from "./utils/currencyFormat"
+import {storefront, currencyFormat, productsQuery} from "../../utils"
 
 export default function FeaturedProducts() {
     const [products, setProducts] = useState([]);
@@ -59,26 +58,3 @@ export default function FeaturedProducts() {
         </div>
     )
 }
-
-const productsQuery = `
-    query Products {
-      products(first: 4) {
-        edges {
-          node {
-            title
-            handle
-            priceRange {
-              minVariantPrice {
-                amount
-              }
-            }
-            images(first: 1) {
-              nodes {
-                transformedSrc
-              }
-            }
-          }
-        }
-      }
-    }
-`
