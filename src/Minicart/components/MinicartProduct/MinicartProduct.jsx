@@ -1,7 +1,7 @@
 import {currencyFormat} from "../../../utils/currencyFormat"
 import React from "react";
 
-export default function MinicartProduct({product,onRemove,onIncreaseQty, onDecreaseQty}) {
+export default function MinicartProduct({product,onRemove,onIncreaseQty, onDecreaseQty,loading}) {
     return (
         <li key={product.id} className="flex py-6">
             <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
@@ -26,7 +26,8 @@ export default function MinicartProduct({product,onRemove,onIncreaseQty, onDecre
                     <div className="w-full h-10 flex items-center justify-between px-2 bg-light-grayish-blue rounded-lg font-bold lg:w-1/2">
                         <button
                             onClick={onDecreaseQty}
-                            className="text-orange w-7 text-2xl leading-none font-bold mb-1 lg:mb-2 lg:text-3xl hover:opacity-60"
+                            disabled={loading}
+                            className="text-orange w-7 text-2xl leading-none font-bold mb-1 lg:mb-2 lg:text-3xl hover:opacity-60 disabled:text-gray-400"
                         >
                             -
                         </button>
@@ -40,7 +41,8 @@ export default function MinicartProduct({product,onRemove,onIncreaseQty, onDecre
 
                         <button
                             onClick={onIncreaseQty}
-                            className="text-orange w-7 text-2xl leading-none font-bold mb-1 lg:mb-2 lg:text-3xl hover:opacity-60"
+                            className="text-orange w-7 text-2xl leading-none font-bold mb-1 lg:mb-2 lg:text-3xl hover:opacity-60 disabled:text-gray-400"
+                            disabled={loading}
                         >
                             +
                         </button>
@@ -50,7 +52,8 @@ export default function MinicartProduct({product,onRemove,onIncreaseQty, onDecre
                         <button
                             onClick={onRemove}
                             type="button"
-                            className="font-medium text-orange hover:opacity-60"
+                            className="font-medium text-orange hover:opacity-60 disabled:text-gray-400"
+                            disabled={loading}
                         >
                             Remove
                         </button>

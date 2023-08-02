@@ -1,8 +1,9 @@
 import React, {useRef, useState} from "react";
 import {gql} from "graphql-request";
 import storefront from "../../../utils/storefront";
+import {currencyFormat} from "../../../utils/currencyFormat";
 
-export default function MinicartFooter({showNote = false, cartId, checkoutUrl, handleClose}) {
+export default function MinicartFooter({cart, showNote = false, cartId, checkoutUrl, handleClose}) {
     const [note, setNote] = useState("");
     const [noteOpen, setNoteOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -28,7 +29,7 @@ export default function MinicartFooter({showNote = false, cartId, checkoutUrl, h
         <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
             <div className="flex justify-between text-base font-medium text-gray-900">
                 <p>Subtotal</p>
-                <p>$262.00</p>
+                <p>{currencyFormat(cart.estimatedCost.totalAmount.amount)}</p>
             </div>
             <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
 

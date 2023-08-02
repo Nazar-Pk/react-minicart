@@ -2,11 +2,12 @@
 
 <div id="minicart"></div>
 
-
 <script type="application/json" id="minicartConfig">
     {
         "heading": {{ section.settings.heading | json }},
         "emptyCartText": {{ section.settings.empty_cart_text | json }},
+        "showProgressBar": {{ section.settings.show_progress_bar | json }},
+        "shippingThreshold": {{ section.settings.threshold | json }},
         "showNote": {{ section.settings.show_note | json }}
     }
 </script>
@@ -26,6 +27,18 @@
                 "type": "text",
                 "label": "Empty cart text",
                 "default": "Your cart is empty!"
+            },
+            {
+                "id": "show_progress_bar",
+                "type": "checkbox",
+                "label": "Show progress bar",
+                "default": true
+            },
+            {
+                "id": "threshold",
+                "type": "number",
+                "label": "Free shipping threshold",
+                "default": 60
             },
             {
                 "id": "show_note",

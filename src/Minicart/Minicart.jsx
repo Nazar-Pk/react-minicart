@@ -12,6 +12,7 @@ export default function Minicart() {
     const [cart, setCart] = useState({});
     const [isCartEmpty, setIsCartEmpty] = useState(true);
     const [errors, setErrors] = useState([]);
+    const [loading, setLoading] = useState(false)
 
     const cartId = sessionStorage.getItem('cartId');
 
@@ -31,9 +32,12 @@ export default function Minicart() {
             lineIds: [lineId]
         }
 
+        setLoading(true);
+
         const {cartLinesRemove} = await storefront(removeItemMutation, variables);
 
         setCart(cartLinesRemove.cart);
+        setLoading(false);
     }
 
     const handleUpdateItem = async (cartId, lineId, quantity) => {
@@ -47,11 +51,15 @@ export default function Minicart() {
             ]
         }
 
+        setLoading(true);
+
         const {cartLinesUpdate} = await storefront(updateItemMutation, variables);
 
         setCart(cartLinesUpdate.cart);
 
         if (cartLinesUpdate.userErrors.length) setErrors(cartLinesUpdate.userErrors);
+
+        setLoading(false);
     }
 
     async function getCart() {
@@ -89,14 +97,24 @@ export default function Minicart() {
     }, [cart]);
 
     useEffect(() => {
-        setTimeout(() => {
-            setErrors([]);
-        }, 5000);
+        if(errors.length) {
+            setTimeout(() => {
+                setErrors([]);
+            }, 10000);
+        }
     }, [errors]);
 
     return (
         <Drawer isOpen={open} setOpen={setOpen}>
-            <MinicartHeader headingText={config.heading} onClose={handleClose}/>
+            <MinicartHeader
+                cart={cart}
+                headingText={config.heading}
+                shippingThreshold={config.shippingThreshold}
+                showProgressBar={config.showProgressBar}
+                isCartEmpty={isCartEmpty}
+                onClose={handleClose}
+            />
+
             <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                 {errors.length > 0 && (
                     <ul className={"mb-6 w-full flex items-center justify-between p-4 bg-light-grayish-blue rounded-lg font-bold"}>
@@ -119,6 +137,7 @@ export default function Minicart() {
                                     onRemove={() => handleRemoveItem(cart.id, lineItem.id)}
                                     onIncreaseQty={() => handleUpdateItem(cart.id, lineItem.id, lineItem.quantity + 1)}
                                     onDecreaseQty={() => handleUpdateItem(cart.id, lineItem.id, lineItem.quantity - 1)}
+                                    loading={loading}
                                 />
                             )
                         })}
@@ -131,6 +150,7 @@ export default function Minicart() {
             </div>
             {!isCartEmpty && (
                 <MinicartFooter
+                    cart={cart}
                     showNote={config.showNote}
                     cartId={cartId}
                     checkoutUrl={cart.checkoutUrl}

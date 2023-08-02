@@ -2,10 +2,12 @@ import React, {useEffect, useState} from 'react'
 import storefront from "./utils/storefront";
 import {currencyFormat} from "./utils/currencyFormat"
 import {gql} from "graphql-request";
+import Loader from "./Loader/Loader";
 
 export default function Product() {
     const [product, setProduct] = useState({});
-    const [quantity, setQuantity] = useState(1)
+    const [quantity, setQuantity] = useState(1);
+    const [loading, setLoading] = useState(false);
     const root = document.querySelector("#product");
     const handle = root.dataset.handle;
 
@@ -38,6 +40,7 @@ export default function Product() {
     }
 
     const handleAddToCart = async () => {
+        setLoading(true);
         let cartId = sessionStorage.getItem('cartId');
 
         if (cartId) {
@@ -77,6 +80,7 @@ export default function Product() {
         }
 
         setQuantity(1);
+        setLoading(false);
     }
 
     return (
@@ -136,9 +140,14 @@ export default function Product() {
                                 </button>
                             </div>
 
-                            <button onClick={handleAddToCart}
-                                    className="cart w-full h-14 bg-orange rounded-lg lg:rounded-xl mb-2 shadow-orange-shadow shadow-2xl text-white flex items-center justify-center lg:w-3/5 hover:opacity-60">
-                                Add to cart
+                            <button
+                                onClick={handleAddToCart}
+                                disabled={loading}
+                                className="disabled:bg-gray-300 transition-all w-full h-14 bg-orange rounded-lg lg:rounded-xl mb-2 shadow-orange-shadow shadow-2xl text-white flex items-center justify-center lg:w-3/5 hover:opacity-60"
+                            >
+                                {loading ? (
+                                    <Loader className={"inline w-4 h-4 text-gray-200 animate-spin fill-white"}/>
+                                ) : "Add to cart"}
                             </button>
                         </div>
                     </section>
