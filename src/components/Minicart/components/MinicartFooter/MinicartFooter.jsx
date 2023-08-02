@@ -1,5 +1,6 @@
 import React, {useRef, useState} from "react";
 import {currencyFormat, storefront, updateNoteMutation} from "../../../../utils";
+import {Loader} from "../../../index";
 
 export default function MinicartFooter({cart, showNote = false, cartId, checkoutUrl, handleClose}) {
     const [loading, setLoading] = useState(false);
@@ -10,7 +11,7 @@ export default function MinicartFooter({cart, showNote = false, cartId, checkout
     const handleSubmit = async (event) => {
         setLoading(true);
 
-        if (noteRef.current.value.length) {
+        if (noteRef.current && noteRef.current?.value.length) {
             event.preventDefault();
 
             const {cartNoteUpdate} = await storefront(updateNoteMutation, {cartId: cartId, note: noteRef.current.value});
@@ -47,7 +48,7 @@ export default function MinicartFooter({cart, showNote = false, cartId, checkout
                     href={url}
                     className="flex items-center justify-center rounded-md border border-transparent bg-orange px-6 py-3 text-base font-medium text-white shadow-sm hover:opacity-60"
                 >
-                    {loading ? "Loading ..." : "Checkout"}
+                    {loading ? (<Loader className={"inline w-4 h-4 text-gray-200 animate-spin fill-white"}/>) : "Checkout"}
                 </a>
             </div>
             <div className="mt-6 flex gap-x-2 justify-center text-center text-sm text-gray-500">

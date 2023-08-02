@@ -149,12 +149,19 @@ export default function Product() {
 
                             <button
                                 onClick={handleAddToCart}
-                                disabled={loading}
-                                className="disabled:bg-gray-300 transition-all w-full h-14 bg-orange rounded-lg lg:rounded-xl mb-2 shadow-orange-shadow shadow-2xl text-white flex items-center justify-center lg:w-3/5 hover:opacity-60"
+                                disabled={loading || !product.availableForSale}
+                                className="disabled:bg-gray-300 disabled:shadow-none transition-all w-full h-14 bg-orange rounded-lg lg:rounded-xl mb-2 shadow-orange-shadow shadow-2xl text-white flex items-center justify-center lg:w-3/5 hover:opacity-60"
                             >
-                                {loading ? (
-                                    <Loader className={"inline w-4 h-4 text-gray-200 animate-spin fill-white"}/>
-                                ) : "Add to cart"}
+                                {!product.availableForSale ? (
+                                    "Sold out"
+                                ) : (
+                                    <>
+                                        {loading ? (
+                                            <Loader className={"inline w-4 h-4 text-gray-200 animate-spin fill-white"}/>
+                                        ) : "Add to cart"}
+                                    </>
+                                )}
+
                             </button>
                         </div>
                     </section>

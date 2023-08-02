@@ -15,5 +15,5 @@ export const setCookie = (cookieName, cookieValue) => {
     var today = new Date();
     var expire = new Date();
     expire.setTime(today.getTime() + 3600000 * 24 * 14);
-    document.cookie = cookieName + "=" + encodeURI(cookieValue) + ";expires=" + expire.toGMTString();
+    document.cookie = cookieName + "=" + encodeURI(cookieValue) + ";path=/ ;expires=" + expire.toGMTString();
 }

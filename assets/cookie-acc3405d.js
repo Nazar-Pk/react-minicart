@@ -1,1 +1,0 @@
-const c=o=>{let e=document.cookie.match(new RegExp("(?:^|; )"+o.replace(/([$?*|{}()[\]\\/+^])/g,"\\$1")+"=([^;]*)"));return e?decodeURIComponent(e[1]):void 0},a=(o,e)=>{var n=new Date,t=new Date;t.setTime(n.getTime()+12096e5),document.cookie=o+"="+encodeURI(e)+";expires="+t.toGMTString()};export{c as g,a as s};

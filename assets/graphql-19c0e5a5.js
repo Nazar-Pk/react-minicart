@@ -279,6 +279,7 @@ Error generating stack: `+o.message+`
   product(handle: $handle) {
     title
     description
+    availableForSale
     variants (first: 1) {
       edges {
         node {

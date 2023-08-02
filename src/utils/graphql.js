@@ -210,6 +210,7 @@ export const singleProduct = gql`
   product(handle: $handle) {
     title
     description
+    availableForSale
     variants (first: 1) {
       edges {
         node {
