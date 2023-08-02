@@ -303,7 +303,7 @@ Error generating stack: `+o.message+`
 }
 `,Uh=`
     query Products {
-      products(first: 4) {
+      products(first: 8) {
         edges {
           node {
             title
