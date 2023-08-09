@@ -58,6 +58,10 @@ export default function Product() {
 
             const data = await storefront(updateCartMutation, variables);
 
+            if(data.cartLinesAdd?.userErrors.length) {
+                setCookie("cartId", data.cartLinesAdd.cart.id);
+            }
+
             document.dispatchEvent(new CustomEvent("cart:item:add", {
                 detail: data.cartLinesAdd
             }));
