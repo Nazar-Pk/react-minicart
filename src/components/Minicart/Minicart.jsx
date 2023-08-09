@@ -83,6 +83,11 @@ export default function Minicart() {
 
         document.addEventListener("cart:action:open", () => setOpen(true));
         document.addEventListener("cart:item:add", (event) => onItemAdd(event.detail));
+
+        return () => {
+            document.removeEventListener("cart:action:open", () => setOpen(true));
+            document.removeEventListener("cart:item:add", (event) => onItemAdd(event.detail));
+        }
     }, []);
 
     useEffect(() => {
